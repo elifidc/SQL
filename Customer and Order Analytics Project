@@ -1,0 +1,65 @@
+## What column(s) do the customers table and the JanSales table have in common?
+  The customers table and the JanSales table both have the OrderID column in common.
+
+
+##Cleaning the Data
+Some OrderIDs were longer than the standard six characters or were filled in with "OrderID". Below is a chunk of 
+code I wrote to be added on to the end of a clause to filter these out.
+
+
+WHERE length(order_id) = 6
+AND order_id <> 'Order ID'
+
+
+#How many orders were placed in January? Remember to filter out the blank and incorrect order IDs.
+  SELECT count(OrderID) FROM BIT_DB.JanSales
+    WHERE length(OrderID) = 6
+    
+    
+#How many of those orders were for an iPhone?    
+    SELECT count(OrderID) FROM BIT_DB.JanSales
+     WHERE length(OrderID) = 6 AND Product = "iPhone"
+     
+#Select the customer account numbers for all the orders that were placed in February.
+  
+  SELECT distinct acctnum FROM BIT_DB.Customers cust
+     INNER JOIN BIT_DB.FebSales Feb
+      ON cust.order_Id = Feb.OrderID
+          WHERE Orderid <> 'Order ID'
+          
+          
+#Which product was the cheapest one sold in January, and what was the price?
+ 
+ SELECT product, min(price) FROM JanSales
+    WHERE OrderID <> "Order ID"
+    
+#What is the total revenue for each product sold in January? 
+(Revenue can be calculated using the number of products sold and the price of the products).
+
+SELECT product, sum(quantity * price) AS revenue FROM JanSales
+WHERE OrderID <> "Order ID"
+GROUP BY product
+
+#Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
+
+SELECT sum(quantity), product, sum(quantity)*price AS revenue
+FROM BIT_DB.FebSales
+WHERE location ='548 Lincoln St, Seattle, WA 98101'
+GROUP BY product
+
+
+###How many customers ordered more than 2 products at a time in February, 
+and what was the average amount spent for those customers?
+
+SELECT
+COUNT(distinct cust.acctnum), 
+AVG(quantity*price)
+FROM BIT_DB.FebSales Feb
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id
+WHERE Feb.Quantity>2
+AND length(orderid) = 6 
+AND orderid <> 'Order ID'
+
+
+
