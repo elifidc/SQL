@@ -77,5 +77,29 @@ AND orderid <> 'Order ID'
 GROUP BY location
 HAVING count(OrderID) > 2
 
+##How many of each type of headphone were sold in February?
 
+SELECT sum(Quantity) as Quantity, product 
+FROM BIT_DB.FEBSALES
+WHERE Product LIKE '%Headphones%'
+GROUP BY product
 
+# What was the average amount spent per account in February?
+SELECT sum(price * quantity) / count(customers.acctnum)
+FROM BIT_DB.FEBSALES
+
+LEFT JOIN BIT_DB.customers
+ON FebSales.orderID=customers.order_id
+
+WHERE orderid<> 'Order ID'
+
+## Which product brought in the most revenue in January and how much revenue did it bring in total?
+
+SELECT product, sum(price * quantity) as total_revenue
+FROM BIT_DB.FEBSALES
+
+WHERE orderid<> 'Order ID'
+
+GROUP BY product
+ORDER BY total_revenue DESC
+LIMIT 1
