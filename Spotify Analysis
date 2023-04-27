@@ -44,4 +44,21 @@ GROUP BY artist_name
 ORDER BY count(artist_name) DESC
 LIMIT 3
 
+#Which artists have the highest average energy levels in their songs?
+SELECT artist_name,avg(energy) as artist_energy
+FROM SpotifyData
+GROUP BY artist_name
+ORDER BY artist_energy desc
+
+
+
+
+
+
+
+
+
+
+
+
 
