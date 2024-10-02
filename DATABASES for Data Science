@@ -1,0 +1,59 @@
+use sakila;
+show tables in sakila;
+SELECT category.category_id, category.name, COUNT(f.film_id) as movie_count
+FROM film f
+JOIN film_category ON f.film_id = film_category.film_id
+JOIN category ON film_category.category_id = category.category_id
+GROUP BY category.category_id
+ORDER BY movie_count DESC;
+-- The top three film categories with the most films are sports, foreign, and family.
+
+SELECT avg(f.rental_rate), c.name
+FROM film f
+JOIN film_category fc ON f.film_id = fc.film_id
+JOIN category c ON fc.category_id = c.category_id
+GROUP BY c.name;
+-- Average rental rate per category
+
+SELECT count(rental_duration) as rental_count, rental_duration, category.name
+FROM film f
+JOIN film_category ON f.film_id = film_category.film_id
+JOIN category ON film_category.category_id = category.category_id
+WHERE category.name = 'Comedy'
+GROUP BY f.rental_duration
+ORDER BY rental_count DESC;
+-- The rental duration most common for films in the Comedy category is 4 days.
+
+SELECT c.customer_id, c.first_name, c.last_name, count(r.rental_id) AS
+rental_count
+FROM customer c
+JOIN rental r ON c.customer_id = r.customer_id
+GROUP BY c.customer_id
+ORDER BY rental_count DESC;
+-- The top three customers that have rented the most films have the
+corresponding customer_ids: 148, 526, 144
+
+select c.customer_id, c.first_name, c.last_name, c.store_id, count(r.rental_id) as
+num_of_rentals
+from customer c
+JOIN rental r ON c.customer_id = r.customer_id
+WHERE store_id = 1
+GROUP BY c.customer_id
+ORDER BY num_of_rentals DESC;
+-- The top three customers that rent most frequently from store #1 have the
+corresponding customer_ids: 148,144, 236
+
+SELECT rental.customer_id, count(rental_id) as rental_count, customer.first_name
+FROM rental
+JOIN customer ON rental.customer_id = customer.customer_id
+GROUP BY customer_id
+HAVING rental_count > 20
+ORDER BY rental_count DESC;
+-- ^ Customers who have rented more than 20 films
+
+SELECT i.film_id, c.first_name, c.last_name, count(r.inventory_id) AS rental_num
+FROM rental r
+JOIN inventory i ON r.inventory_id = i.inventory_id
+JOIN customer c ON r.customer_id = c.customer_id
+GROUP BY i.film_id, c.first_name, c.last_name
+-- How many times each customer has rented each movie
